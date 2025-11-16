@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#333333" />
+    <title>Story App Dicoding</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+      
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body>
+    <a href="#app-content" class="skip-link">Menuju ke Konten</a>
+
+    <header class="app-header">
+      <nav class="app-nav">
+        <ul>
+          <li><a href="#/login">Login</a></li>
+          <li><a href="#/register">Register</a></li>
+          <li>
+            <button id="notification-toggle" class="button-nav" aria-label="Aktifkan Notifikasi" style="display: none;">
+              🔔 Aktifkan Notifikasi
+            </button>
+          </li>
+          </ul>
+      </nav>
+    </header>
+
+    <main id="app-content" tabindex="-1"></main>
+
+    <footer class="app-footer">
+      <p>Imam Mahmud Dalil Fauzan © 2025</p>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

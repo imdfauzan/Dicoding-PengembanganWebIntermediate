@@ -1,0 +1,379 @@
+/* Reset Dasar */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f4;
+  color: #28283c;
+}
+
+/* Styling Skip-Link (Kriteria 4) */
+.skip-link {
+  position: absolute;
+  top: -40px; /* Sembunyikan di luar layar */
+  left: 0;
+  background: #000;
+  color: white;
+  padding: 8px;
+  z-index: 10000;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Tampilkan saat di-fokus (via Tab) */
+.skip-link:focus {
+  top: 0;
+}
+
+/* Layout Utama */
+.app-header {
+  background: #28283c;
+  color: white;
+  padding: 1rem;
+}
+
+#app-content {
+  /* Ini adalah target skip-link */
+  padding: 1rem;
+  min-height: 80vh;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 1rem;
+  background: #28283c;
+  color: white;
+  margin-top: 1rem;
+}
+
+/* Responsif Dasar (Kriteria 4) */
+@media (max-width: 768px) {
+  /* Nanti kita tambahkan style mobile di sini */
+}
+
+@media (max-width: 375px) {
+  /* Nanti kita tambahkan style mobile sempit di sini */
+}
+
+/* Navigasi */
+.app-nav ul {
+  list-style-type: none;
+  display: flex;
+  gap: 1rem; /* Jarak antar menu */
+}
+.app-nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+.app-nav a:hover {
+  text-decoration: underline;
+}
+
+/* Styling Form (Kriteria 4) */
+.form-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block; /* Penting untuk aksesibilitas */
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background: #28283c;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.button:hover {
+  background: #555;
+}
+
+.form-container p {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* View Transition API (Kriteria 1) */
+/* Ini adalah transisi default (fade) */
+@keyframes slide-from-bottom {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-to-top {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+}
+
+
+::view-transition-old(root) {
+  /* Halaman lama akan beranimasi keluar (slide ke atas) */
+  animation: 300ms ease-out both slide-to-top;
+}
+
+::view-transition-new(root) {
+  /* Halaman baru akan beranimasi masuk (slide dari bawah) */
+  animation: 300ms ease-in both slide-from-bottom;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Layout Halaman Home (Kriteria 4 Responsif) */
+.home-container {
+  display: flex;
+  flex-wrap: wrap; /* Akan wrap di layar kecil */
+  height: calc(100vh - 150px); /* Tinggi viewport dikurangi header/footer */
+}
+
+.story-list-container {
+  flex: 1; /* Ambil 1 bagian */
+  min-width: 300px; /* Lebar minimum */
+  padding: 1rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.story-list-container h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #f4f4f4;
+  padding-bottom: 0.5rem;
+}
+
+.story-list-content {
+  overflow-y: auto; /* Kunci: Buat list bisa di-scroll */
+  height: 100%;
+}
+
+.map-container {
+  flex: 2; /* Ambil 2 bagian (lebih besar) */
+  min-width: 300px;
+}
+
+/* Kunci: Peta harus punya tinggi! */
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Styling Item Cerita */
+.story-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.story-item:hover {
+  background-color: #f9f9f9;
+}
+
+.story-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.story-item-info h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.story-item-info p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Responsif untuk Mobile (Kriteria 4) */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column; /* Susun vertikal di tablet/hp */
+    height: auto; /* Biarkan tinggi otomatis */
+  }
+  
+  .story-list-container {
+    /* Set tinggi tetap agar tidak memakan layar, tapi bisa scroll */
+    max-height: 40vh; 
+  }
+
+  .map-container {
+    /* Peta harus punya tinggi tetap di mobile */
+    min-height: 60vh;
+  }
+}
+
+/* Styling untuk Peta di Halaman Add (Kriteria 3) */
+#map-add-story {
+  height: 300px; /* Tinggi peta */
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  /* z-index diperlukan agar Peta tampil di atas elemen lain */
+  z-index: 0; 
+}
+
+/* Styling untuk Textarea */
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit; /* Warisi font body */
+  resize: vertical; /* Izinkan resize vertikal saja */
+}
+
+/* Styling untuk tanggal di story item */
+.story-date {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 4px;
+  display: block; /* Agar tampil di baris baru */
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap; /* Teks tidak ter-wrap */
+}
+
+/* Kriteria 4: Styling Search Bar */
+.search-container {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+#search-story {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Kriteria 4: Styling Tombol Delete Lokal */
+.button-delete {
+  background-color: #f8d7da; /* Merah muda */
+  color: #721c24; /* Merah tua */
+  border: 1px solid #f5c6cb;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: auto; /* Posisikan di kanan */
+  align-self: center;
+}
+
+.button-delete:hover {
+  background-color: #f1b0b7;
+}
+
+/* Sedikit penyesuaian pada story-item agar tombol delete pas */
+.story-item {
+  /* Pastikan flexbox sudah ada */
+  display: flex;
+  align-items: center; /* Vertikal center */
+  gap: 1rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Label tersembunyi (jika Anda belum punya) */
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+/* Style untuk Tombol Notifikasi di Nav */
+.button-nav {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.button-nav:hover {
+  background: white;
+  color: #333;
+}
