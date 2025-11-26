@@ -1,6 +1,7 @@
 // src/api/api-service.js
 
 const API_BASE_URL = 'https://story-api.dicoding.dev/v1';
+const VAPID_PUBLIC_KEY = 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk';
 
 const ApiService = {
   /**
@@ -112,6 +113,76 @@ const ApiService = {
       return responseJson;
     } catch (error) {
       console.error('Error posting story:', error);
+      throw error;
+    }
+  },
+
+  async getStoryDetail(storyId, token) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/${storyId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const responseJson = await response.json();
+
+      if (response.status >= 400) {
+        throw new Error(responseJson.message || 'Gagal mengambil detail cerita');
+      }
+      return responseJson.story;
+    } catch (error) {
+      console.error('Error fetching story detail:', error);
+      throw error;
+    }
+  },
+
+  async getVapidKey() {
+    // Berdasarkan dokumentasi Story API bagian push notification
+    // VAPID public key bersifat statis.
+    return VAPID_PUBLIC_KEY;
+  },
+
+  async subscribePush(subscriptionPayload, token) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/notifications/subscribe`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(subscriptionPayload),
+      });
+      const responseJson = await response.json();
+
+      if (response.status >= 400) {
+        throw new Error(responseJson.message || 'Gagal berlangganan push notification');
+      }
+      return responseJson;
+    } catch (error) {
+      console.error('Error subscribing to push:', error);
+      throw error;
+    }
+  },
+
+  async unsubscribePush(endpoint, token) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/notifications/subscribe`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ endpoint }),
+      });
+      const responseJson = await response.json();
+
+      if (response.status >= 400) {
+        throw new Error(responseJson.message || 'Gagal menghentikan langganan push notification');
+      }
+      return responseJson;
+    } catch (error) {
+      console.error('Error unsubscribing from push:', error);
       throw error;
     }
   },

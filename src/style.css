@@ -377,3 +377,124 @@ body {
   background: white;
   color: #333;
 }
+
+/* Tombol Bookmark (Kriteria 4) */
+.button-bookmark {
+  background: none;
+  border: 2px solid #ccc;
+  border-radius: 50%; /* Bulat */
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  margin-left: auto;
+  align-self: center;
+  transition: all 0.2s ease;
+}
+.button-bookmark:hover {
+  background: #f0f0f0;
+  border-color: #888;
+}
+.button-bookmark:disabled {
+  cursor: not-allowed;
+  background: #e0f0e0; /* Hijau muda saat sukses */
+  border-color: #5cb85c;
+}
+
+/* Styling Halaman Tersimpan (opsional) */
+.saved-stories-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.saved-stories-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Halaman Detail Cerita */
+.story-detail {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.story-detail-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.story-detail-card img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.story-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.story-detail-actions {
+  margin-top: 1rem;
+}
+
+.story-detail-map {
+  height: 320px;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f2f2f2;
+}
+
+.story-detail-map--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
+  color: #666;
+  padding: 1.5rem;
+}
+
+.back-link {
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Marker foto agar berbentuk lingkaran */
+.leaflet-marker-icon.story-marker-icon {
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .story-detail-card {
+    flex-direction: row;
+  }
+
+  .story-detail-card img {
+    width: 45%;
+    max-height: none;
+  }
+
+  .story-detail-info {
+    flex: 1;
+  }
+}

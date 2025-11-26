@@ -2,57 +2,68 @@
 
 class Router {
   constructor(contentElement) {
-    this.contentElement = contentElement; // Elemen <main id="app-content">
-    this.routes = {}; // Tempat menyimpan rute: { '#/login': pageObject, ... }
-    
-    // Listener untuk hash change
+    this.contentElement = contentElement;
+    this.routes = [];
+
     window.addEventListener('hashchange', () => this.handleRouteChange());
-    // Listener untuk load awal
     window.addEventListener('load', () => this.handleRouteChange());
   }
 
-  /**
-   * Menambahkan rute baru
-   * @param {string} path - Hash path (cth: '#/login')
-   * @param {object} page - Objek halaman yang memiliki method render() dan afterRender()
-   */
   addRoute(path, page) {
-    this.routes[path] = page;
+    const { regex, paramNames } = this._createRouteMatcher(path);
+    this.routes.push({ path, page, regex, paramNames });
   }
 
-  /**
-   * Menangani perubahan rute
-   */
   async handleRouteChange() {
-    const path = window.location.hash || '#/login'; // Default ke login
-    const page = this.routes[path];
+    const hash = window.location.hash || '#/login';
+    const matchedRoute = this.routes.find((route) => route.regex.test(hash));
 
-    if (page) {
-      // Kriteria 1: Menerapkan View Transition
-      // Kita bungkus perubahan DOM dengan startViewTransition
-      if (!document.startViewTransition) {
-        // Fallback jika API tidak didukung
-        await this.renderPage(page);
-      } else {
-        document.startViewTransition(async () => {
-          await this.renderPage(page);
-        });
-      }
-    } else {
-      // Halaman 404 (Not Found)
+    if (!matchedRoute) {
       this.contentElement.innerHTML = '<h1>404 - Halaman tidak ditemukan</h1>';
+      return;
+    }
+
+    const params = this._extractParams(matchedRoute, hash);
+
+    if (!document.startViewTransition) {
+      await this.renderPage(matchedRoute.page, params);
+      return;
+    }
+
+    document.startViewTransition(async () => {
+      await this.renderPage(matchedRoute.page, params);
+    });
+  }
+
+  async renderPage(page, params = {}) {
+    this.contentElement.innerHTML = await page.render(params);
+    if (page.afterRender) {
+      await page.afterRender(params);
     }
   }
-  
-  /**
-   * Merender halaman ke DOM
-   * @param {object} page - Objek halaman yang akan dirender
-   */
-  async renderPage(page) {
-    this.contentElement.innerHTML = await page.render(); // Panggil render()
-    if (page.afterRender) {
-      await page.afterRender(); // Panggil afterRender() (untuk event listener)
-    }
+
+  _createRouteMatcher(path) {
+    const paramNames = [];
+    const pattern = path.replace(/:[^/]+/g, (match) => {
+      paramNames.push(match.substring(1));
+      return '([^/]+)';
+    });
+
+    return {
+      regex: new RegExp(`^${pattern}$`),
+      paramNames,
+    };
+  }
+
+  _extractParams(route, hash) {
+    const match = hash.match(route.regex);
+    if (!match) return {};
+
+    return route.paramNames.reduce((params, name, index) => {
+      const value = match[index + 1];
+      params[name] = value ? decodeURIComponent(value) : value;
+      return params;
+    }, {});
   }
 }
 

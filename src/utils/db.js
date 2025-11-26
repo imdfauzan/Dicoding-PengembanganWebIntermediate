@@ -3,65 +3,63 @@
 import { openDB } from 'idb';
 
 const DB_NAME = 'story-app-db';
-const STORE_NAME = 'stories';
+const STORE_NAME = 'saved-stories';
 const DB_VERSION = 1;
 
 // Inisialisasi database
 const dbPromise = openDB(DB_NAME, DB_VERSION, {
   upgrade(db) {
-    // Buat object store (tabel) jika belum ada
     if (!db.objectStoreNames.contains(STORE_NAME)) {
-      // Kita gunakan 'id' sebagai keyPath
       db.createObjectStore(STORE_NAME, { keyPath: 'id' });
     }
+    
+    // (Jika Anda punya store 'stories' lama, Anda bisa hapus,
+    // tapi lebih aman biarkan saja untuk Kriteria 3)
   },
 });
 
-const StoryDb = {
+const SavedStoryDb = {
   /**
-   * Mengambil semua cerita dari IndexedDB
-   * @returns {Promise<Array>} Array of stories
+   * Mengambil semua cerita yang di-bookmark
    */
-  async getAllStories() {
+  async getAllSavedStories() {
     return (await dbPromise).getAll(STORE_NAME);
   },
 
   /**
-   * Menyimpan satu cerita ke IndexedDB
-   * @param {object} story - Objek cerita
+   * Mengambil satu cerita yang di-bookmark berdasarkan ID
+   * @param {string} id
    */
-  async putStory(story) {
+  async getSavedStory(id) {
+    if (!id) return undefined;
+    return (await dbPromise).get(STORE_NAME, id);
+  },
+
+  /**
+   * Menyimpan (bookmark) satu cerita
+   * @param {object} story
+   */
+  async putSavedStory(story) {
+    if (!story || !story.id) {
+      throw new Error('Data cerita tidak valid untuk disimpan.');
+    }
     return (await dbPromise).put(STORE_NAME, story);
   },
 
   /**
-   * Menyimpan banyak cerita ke IndexedDB
-   * @param {Array<object>} stories - Array objek cerita
+   * Menghapus (un-bookmark) cerita berdasarkan ID
    */
-  async putAllStories(stories) {
-    const tx = (await dbPromise).transaction(STORE_NAME, 'readwrite');
-    await Promise.all(
-      stories.map((story) => {
-        return tx.store.put(story);
-      })
-    );
-    return tx.done;
-  },
-
-  /**
-   * Menghapus cerita dari IndexedDB berdasarkan ID
-   * @param {string} id - ID cerita
-   */
-  async deleteStory(id) {
+  async deleteSavedStory(id) {
+    if (!id) return undefined;
     return (await dbPromise).delete(STORE_NAME, id);
   },
 
   /**
-   * Menghapus semua cerita (untuk sinkronisasi)
+   * Mengosongkan seluruh bookmark (opsional)
    */
-  async clearAllStories() {
+  async clearSavedStories() {
     return (await dbPromise).clear(STORE_NAME);
   },
 };
 
-export default StoryDb;
+export default SavedStoryDb;
