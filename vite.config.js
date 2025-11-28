@@ -12,6 +12,7 @@ export default defineConfig({
       filename: 'sw.js',
       // 3. Biarkan registerType
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       
       // 4. Manifest tetap sama (salin dari config lama Anda)
       manifest: {

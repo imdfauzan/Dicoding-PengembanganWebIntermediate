@@ -1,7 +1,16 @@
 // src/views/pages/add-story-page.js
 import L from 'leaflet';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import ApiService from '../../api/api-service';
 import Auth from '../../utils/auth';
+
+// Fix Leaflet default icon path issue with bundlers
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 // --- Kriteria 3 (Advance): Variabel untuk stream kamera ---
 let mediaStream = null; 
