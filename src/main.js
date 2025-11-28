@@ -1,9 +1,6 @@
 import './style.css';
 import 'leaflet/dist/leaflet.css';
 
-import L from 'leaflet';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import Router from './utils/router';
 import LoginPage from './views/pages/login-page';
 import RegisterPage from './views/pages/register-page';
@@ -15,13 +12,6 @@ import StoryDetailPage from './views/pages/story-detail-page';
 
 import Auth from './utils/auth';
 import ApiService from './api/api-service';
-
-// Atur ikon default Leaflet secara manual
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
 
 if (!document.startViewTransition) {
   document.startViewTransition = (callback) => {
@@ -51,17 +41,18 @@ async function subscribeToPush() {
     throw new Error('Browser Anda belum mendukung push notification.');
   }
 
+  let subscription = null;
   try {
     const swRegistration = await navigator.serviceWorker.ready;
-    const existingSubscription = await swRegistration.pushManager.getSubscription();
-    if (existingSubscription) {
-      return existingSubscription;
+    subscription = await swRegistration.pushManager.getSubscription();
+    if (subscription) {
+      return subscription;
     }
     
     const vapidKey = await ApiService.getVapidKey();
     const applicationServerKey = urlBase64ToUint8Array(vapidKey);
 
-    const subscription = await swRegistration.pushManager.subscribe({
+    subscription = await swRegistration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey,
     });
@@ -76,6 +67,10 @@ async function subscribeToPush() {
     return subscription;
   } catch (err) {
     console.error(err);
+    // Rollback: Jika API gagal, hapus subscription lokal agar tidak mismatch
+    if (subscription) {
+      await subscription.unsubscribe();
+    }
     updateNotificationButtonStatus();
     throw err;
   }

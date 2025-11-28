@@ -5,17 +5,6 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import ApiService from '../../api/api-service';
 import Auth from '../../utils/auth';
 
-// Fix Leaflet default icon path issue with bundlers
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
-
-// --- Kriteria 3 (Advance): Variabel untuk stream kamera ---
-let mediaStream = null; 
-// ----------------------------------------------------
-
 const AddStoryPage = {
   async render() {
     return `
@@ -76,11 +65,24 @@ const AddStoryPage = {
     const latInput = document.getElementById('lat');
     const lonInput = document.getElementById('lon');
 
+// --- Kriteria 3 (Advance): Variabel untuk stream kamera ---
+let mediaStream = null; 
+// ----------------------------------------------------
+
     // Inisialisasi Peta
     const map = L.map('map-add-story').setView([-2.5489, 118.0149], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
+
+    const myIcon = L.icon({
+      iconUrl: markerIcon,
+      shadowUrl: markerShadow,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
 
     let marker = null; 
     map.on('click', (e) => {
@@ -90,7 +92,7 @@ const AddStoryPage = {
       if (marker) {
         marker.setLatLng(e.latlng);
       } else {
-        marker = L.marker(e.latlng).addTo(map);
+        marker = L.marker(e.latlng, { icon: myIcon }).addTo(map);
       }
       marker.bindPopup('Lokasi cerita dipilih').openPopup();
     });

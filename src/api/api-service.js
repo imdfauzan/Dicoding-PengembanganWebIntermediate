@@ -143,15 +143,25 @@ const ApiService = {
     return VAPID_PUBLIC_KEY;
   },
 
-  async subscribePush(subscriptionPayload, token) {
+  async subscribePush(subscription, token) {
     try {
+      // Pastikan payload sesuai dengan struktur yang diminta API
+      // { endpoint: string, keys: { p256dh: string, auth: string } }
+      const payload = {
+        endpoint: subscription.endpoint,
+        keys: {
+          p256dh: subscription.keys.p256dh,
+          auth: subscription.keys.auth,
+        },
+      };
+
       const response = await fetch(`${API_BASE_URL}/notifications/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(subscriptionPayload),
+        body: JSON.stringify(payload),
       });
       const responseJson = await response.json();
 
